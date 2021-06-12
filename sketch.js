@@ -9,7 +9,8 @@ var acidrain
 var acidGroup
 var acidImg
 var acidRaining
-var life, lifeImg
+var gameover
+var life, lifeImg, livesleft
 function setup() {
   createCanvas(1350,800);
   boxImg = loadImage("Block.jpg");
@@ -28,7 +29,7 @@ function setup() {
   life = createSprite(1300,50,90,90);
   lifeImg = loadImage("Life.png");
   acidImg = loadImage("Acid.png");
-
+  livesleft = 2
   boxesGroup = createGroup();
   boxesGroup.add(box1);
   boxesGroup.add(box2);
@@ -69,7 +70,9 @@ function draw() {
   box3.velocityY= box3.velocityY+1
   box4.velocityY= box4.velocityY+1
   box5.velocityY= box5.velocityY+1
-  text("2",1295,45,90,90)
+  fill(255);
+  text(livesleft,1297,43,90,90)
+ 
   player.collide(grass);
   box1.collide(grass);
   box1.collide(player);
@@ -96,6 +99,15 @@ function draw() {
   acidGroup.setVelocityYEach(12);
   spawnAcidRain()
   keyPressed();
+  if(acidGroup.isTouching(player)){
+    livesleft = livesleft-1
+    acidGroup.destroyEach();
+    if(livesleft === 0){
+      gameover = true
+      player.y = 5555;
+    }
+
+  }
   if(player.y > 705){
 
     if(keyDown("UP_ARROW")){
@@ -108,6 +120,11 @@ function draw() {
   }
   if(keyDown("RIGHT_ARROW")){
     player.x = player.x + 5
+  }
+  if(gameover === true){
+    fill(0);
+    text("GAME OVER",675,400,90,90)
+  
   }
 }
 
