@@ -1,22 +1,23 @@
 var player
 var grass
 var box
-var sunlight
-var cloudy
 var boxImg
 var boxesGroup
 var acidrain
 var acidGroup
 var acidImg
-var acidRaining
+var acidRaining=false
 var gameover
-var life, lifeImg, livesleft
+var life, lifeImg, livesleft=2
+var bgimg
+ 
 function setup() {
-  createCanvas(1350,800);
-  boxImg = loadImage("Block.jpg");
+  createCanvas(1350,1000);
+  //objects creation
+
   player = createSprite(250, 200, 25, 45);
   player.shapeColor = "blue";
-  grass = createSprite(400, 800, 2000, 125);
+  grass = createSprite(400, 1000, 2000, 565);
   grass.shapeColor = "green";
   box1 = createSprite(700,0,50,50);
   box1.shapeColor = "tan";
@@ -27,9 +28,9 @@ function setup() {
   box4 = createSprite(987,0,90,90);
   box5 = createSprite(987,-50,90,90);
   life = createSprite(1300,50,90,90);
-  lifeImg = loadImage("Life.png");
-  acidImg = loadImage("Acid.png");
-  livesleft = 2
+
+  //livesleft = 2
+  //Group creation
   boxesGroup = createGroup();
   boxesGroup.add(box1);
   boxesGroup.add(box2);
@@ -38,19 +39,17 @@ function setup() {
   boxesGroup.add(box5);
   acidGroup = createGroup();
 }
+
 function preload(){
-sunlight = loadImage("Sunny.jpg");
-cloudy = loadImage("cloudy.jpg");
-
-
-
-
-
-
+  bgimg = loadImage("Sunny.jpg");
+  //acidRaining = false
+  boxImg = loadImage("Block.jpg");
+  lifeImg = loadImage("Life.png");
+  acidImg = loadImage("Acid.png");
 }
 
 function draw() {
-  background(sunlight);  
+  background(bgimg);  
   drawSprites();
   box1.addImage(boxImg);
   box1.scale = 0.1
@@ -64,15 +63,23 @@ function draw() {
   box5.scale = 0.1
   life.addImage(lifeImg)
   life.scale = 0.1
+
+  //give initial velocity to objects
   player.velocityY = player.velocityY+1
   box1.velocityY= box1.velocityY+1
   box2.velocityY= box2.velocityY+1
   box3.velocityY= box3.velocityY+1
   box4.velocityY= box4.velocityY+1
   box5.velocityY= box5.velocityY+1
+
   fill(255);
-  text(livesleft,1297,43,90,90)
- 
+  textSize(25);
+  text(livesleft,1293,37,90,90)
+  stroke("green");
+  fill("lime");
+  text("SHELTER SURVIVAL",625,800)
+  text("FROM ACID RAIN",635,835)
+
   player.collide(grass);
   box1.collide(grass);
   box1.collide(player);
@@ -96,9 +103,17 @@ function draw() {
   box5.collide(box4);
   box5.collide(grass);
   box5.collide(player);
+  
+  spawnAcidRain();
   acidGroup.setVelocityYEach(12);
-  spawnAcidRain()
-  keyPressed();
+
+  if(acidRaining === false){
+    stroke("green");
+    fill("lime");
+    textSize(25);
+    text("(Press Space To Start Acid Rain)",560,750)
+  }
+ //lives calculation
   if(acidGroup.isTouching(player)){
     livesleft = livesleft-1
     acidGroup.destroyEach();
@@ -106,51 +121,58 @@ function draw() {
       gameover = true
       player.y = 5555;
     }
-
   }
-  if(player.y > 705){
-
+//player controls
+  if(player.y > 694){
     if(keyDown("UP_ARROW")){
-      player.velocityY = -25
+      player.velocityY = -15
     }
-
   }
   if(keyDown("LEFT_ARROW")){
-    player.x = player.x - 5
+    player.x = player.x - 7
   }
   if(keyDown("RIGHT_ARROW")){
-    player.x = player.x + 5
+    player.x = player.x + 7
   }
+  //END STATE OF GAME
   if(gameover === true){
-    fill(0);
+    stroke("black");
+    fill("red");
+    textSize(35);
     text("GAME OVER",675,400,90,90)
-  
-  }
+    
+    acidRaining = false
+  } 
 }
-
 
 function keyPressed(){
-
 if(keyCode === 32){
-
+  bgimg = loadImage("cloudy.jpg");
   acidRaining = true; 
+//for(var i=0;i<2;i++){
+  spawnAcidRain();
+//}
 }
-
 }
 
 function spawnAcidRain(){
   if(acidRaining === true){
-
-  acidrain = createSprite(random(0,1400),0,5,5);
-  acidrain.lifetime = 63 
-  acidrain.addImage(acidImg);
-  acidrain.scale=0.02
-  acidGroup.add(acidrain);
-  acidGroup.collide(box1);
-  acidGroup.collide(box2);
-  acidGroup.collide(box3);
-  acidGroup.collide(box4);
-  acidGroup.collide(box5);
+    for(var i=0;i<2;i++){
+      acidrain = createSprite(random(0,1400),random(-5,0),5,5);
+      acidrain.lifetime = 63 
+      acidrain.addImage(acidImg);
+      acidrain.scale=0.02
+      acidGroup.add(acidrain);
+      acidGroup.collide(box1);
+      acidGroup.collide(box2);
+      acidGroup.collide(box3);
+      acidGroup.collide(box4);
+      acidGroup.collide(box5);
+      if(frameCount % 2 ===0){
+      stroke("red");
+      fill("maroon");
+      text("Warning: Acid Rain",675,100);
+    }
   }
-  
+}
 }
