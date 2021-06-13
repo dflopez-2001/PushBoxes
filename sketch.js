@@ -8,7 +8,7 @@ var acidGroup
 var acidImg
 var acidRaining=false
 var gameover
-var life, lifeImg, livesleft=2
+var life, lifeImg, livesleft=3
 var bgimg
  
 function setup() {
@@ -27,6 +27,7 @@ function setup() {
   box3.shapeColor = "tan";
   box4 = createSprite(987,0,90,90);
   box5 = createSprite(987,-50,90,90);
+  box6 = createSprite(1007,0,90,90);
   life = createSprite(1300,50,90,90);
 
   //livesleft = 2
@@ -61,8 +62,10 @@ function draw() {
   box4.scale = 0.1
   box5.addImage(boxImg);
   box5.scale = 0.1
+  box6.addImage(boxImg);
+  box6.scale = 0.1
   life.addImage(lifeImg)
-  life.scale = 0.1
+  life.scale = 0.15
 
   //give initial velocity to objects
   player.velocityY = player.velocityY+1
@@ -71,6 +74,7 @@ function draw() {
   box3.velocityY= box3.velocityY+1
   box4.velocityY= box4.velocityY+1
   box5.velocityY= box5.velocityY+1
+  box6.velocityY= box6.velocityY+1
 
   fill(255);
   textSize(25);
@@ -103,6 +107,13 @@ function draw() {
   box5.collide(box4);
   box5.collide(grass);
   box5.collide(player);
+  box6.collide(box1);
+  box6.collide(box2);
+  box6.collide(box3);
+  box6.collide(box4);
+  box6.collide(box5);
+  box6.collide(grass);
+  box6.collide(player);
   
   spawnAcidRain();
   acidGroup.setVelocityYEach(12);
@@ -168,10 +179,12 @@ function spawnAcidRain(){
       acidGroup.collide(box3);
       acidGroup.collide(box4);
       acidGroup.collide(box5);
+      acidGroup.collide(box6);
       if(frameCount % 2 ===0){
       stroke("red");
       fill("maroon");
-      text("Warning: Acid Rain",675,100);
+      textSize(25)
+      text("Warning: Acid Rain",655,100);
     }
   }
 }
